@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Player de Música</title>
+    <style>
+        /* --- CSS ATUALIZADO --- */
+        
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center; /* Centraliza horizontalmente */
+            align-items: center;     /* Centraliza verticalmente */
+            font-family: 'Ubuntu', sans-serif;
+            overflow: hidden;        /* Evita barras de rolagem por causa do blur */
+        }
+
+        /* Aqui criamos o fundo com a imagem */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; 
+            left: 0;
+            width: 100%;
+            height: 100%;
+            
+            /* TROCA AQUI O NOME DA IMAGEM SE QUISERES OUTRA */
+            background: url('assets/fundo2.jpg') no-repeat center center;
+            background-size: cover; /* Faz a imagem cobrir tudo */
+            
+            /* O Efeito de Borrar */
+            filter: blur(8px) brightness(0.7); /* Blur + um pouco escuro para ler melhor */
+            
+            /* Truque para tirar as bordas brancas do blur */
+            transform: scale(1.1); 
+            z-index: -1; /* Fica atrás de tudo */
+        }
+
+        .login-container {
+            /* Fundo semi-transparente preto */
+            background: rgba(0, 0, 0, 0.6); 
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            width: 300px;
+            
+            /* Sombra para destacar do fundo */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            
+            /* Borda fina para efeito de vidro */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            
+            /* Cor do texto */
+            color: white;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.9); /* Input branquinho */
+        }
+
+        button {
+            background-color: #8bb6b1;
+            border: none;
+            padding: 12px 20px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+            width: 100%;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background-color: #506966;
+        }
+
+        h2, h3 { margin-top: 0; }
+
+
+        /* Estilo do Botão Rosa */
+        .botao-marrom{
+    background-color: #6d4e3a; /* Cor original rosa */
+    color: white;
+}
+
+/* O efeito Hover (quando passa o rato) */
+    .botao-marrom:hover {
+    background-color: #39291e;   /* Fica branco */
+
+
+}
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Faça o seu Login</h2>
+        
+        <form action="auth.php" method="POST">
+            <input type="email" name="email" placeholder="E-mail" required>
+            <input type="password" name="senha" placeholder="Senha" required>
+            <input type="hidden" name="acao" value="login">
+            <button type="submit">Entrar</button>
+        </form>
+
+        <div style="margin: 25px 0; border-top: 1px solid rgba(255,255,255,0.2);"></div>
+
+        <form action="auth.php" method="POST">
+            <h3 style="font-size: 16px; font-weight: normal;">Não tem conta?</h3>
+            <input type="text" name="nome" placeholder="Seu Nome" required>
+            <input type="email" name="email" placeholder="Seu E-mail" required>
+            <input type="password" name="senha" placeholder="Crie uma Senha" required>
+            <input type="hidden" name="acao" value="cadastro">
+            
+           <button type="submit" class="botao-marrom">Cadastrar</button>
+        </form>
+    </div>
+
+</body>
+</html>

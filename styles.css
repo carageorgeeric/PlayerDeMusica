@@ -152,41 +152,66 @@ h3{
     
 }
 
+/* --- ALINHAMENTO PERFEITO DA BUSCA --- */
+
 .search-wrapper {
-    width:90%;
-    margin-top: 20px; 
-    display: flex; 
-    justify-content: center; 
-    gap: 10px;  
+    display: flex;
+    justify-content: center; /* Força tudo para o MEIO */
+    align-items: center;     /* Alinha na vertical */
+    width: 100%;            
+    gap: 10px;               
+    margin-top: 20px;
+    margin-bottom: 10px;
+    position: relative;      
 }
 
-#search-input{
-    width: 70%;
-    padding: 10px; 
-    border-radius: 20px; 
-    border: none; 
-    outline: none; 
-    font-family: 'Ubuntu', sans-serif; 
-}
 
-#search-button {
-    background-color: #212121;
-    color: white;
+#search-input {
+    width: 250px;            
+    height: 40px;            
+    padding: 0 15px;         
+    border-radius: 20px;     
     border: none;
-    padding: 10px 15px;
-    border-radius: 50%;
+    outline: none;
+    font-family: 'Ubuntu', sans-serif;
+    box-sizing: border-box; 
+}
+
+
+#search-button, #fav-button {
+    width: 40px;            
+    height: 40px;           
+    border-radius: 50%;    
+    border: none;
     cursor: pointer;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    background: transparent; 
+    padding: 0;
+    margin: 0;
+    
     transition: transform 0.2s;
 }
 
-#search-button:hover {
+
+#search-button:hover, #fav-button:hover {
+    background-color: rgba(255, 255, 255, 0.2); 
     transform: scale(1.1);
 }
 
-#search-button i {
-    font-size: 16px;
-    margin: 0; 
-    color: white;
+
+#search-button i { 
+    font-size: 18px; 
+    color: #212121; 
+}
+
+#fav-button i { 
+    font-size: 22px; 
+    color: #ff4081; 
+    margin-top: 2px; 
 }
 
 

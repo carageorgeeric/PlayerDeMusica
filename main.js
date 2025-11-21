@@ -117,19 +117,21 @@ const searchButton = document.getElementById('search-button');
 const musicList = document.getElementById('music-list');
 const loadingSpinner = document.getElementById('loading-spinner');
 
+// ... (Mantenha o código anterior igual até chegar na função searchMusic) ...
+
+// --- ATUALIZAÇÃO DA FUNÇÃO DE PESQUISA ---
+
 async function searchMusic(term) {
     if (!term) return;
 
-    // 1. MOSTRAR LOADING
     loadingSpinner.style.display = 'block';
-    musicList.style.display = 'none'; // Esconde a lista antiga se houver
+    musicList.style.display = 'none'; 
 
     try {
         const url = `https://itunes.apple.com/search?term=${encodeURIComponent(term)}&media=music&limit=5`;
         const response = await fetch(url);
         const data = await response.json();
 
-        // 2. ESCONDER LOADING (pois já terminou)
         loadingSpinner.style.display = 'none';
 
         if (data.results.length === 0) {
@@ -137,45 +139,59 @@ async function searchMusic(term) {
             return;
         }
 
-        // 3. LIMPAR O CAMPO DE TEXTO
-        searchInput.value = '';
-
+        searchInput.value = ''; 
         musicList.innerHTML = '';
         musicList.style.display = 'block';
 
         data.results.forEach(song => {
             const li = document.createElement('li');
-
-            // Tratamento da Capa: Se não tiver imagem, usa a assets/2.png
-            let coverImage = 'assets/nota-musical.png';
+            
+            let coverImage = 'assets/2.png'; 
             if (song.artworkUrl100) {
                 coverImage = song.artworkUrl100.replace('100x100', '400x400');
             }
 
+            // Monta o HTML da lista com o botão de Coração
             li.innerHTML = `
-                <div style="display: flex; align-items: center;">
+                <div style="display: flex; align-items: center; flex-grow: 1;">
                     <img src="${coverImage}" style="width: 40px; height: 40px; border-radius: 5px; margin-right: 10px;">
                     <span>
                         <strong>${song.trackName}</strong> <br> 
                         <small>${song.artistName}</small>
                     </span>
                 </div>
-                <i class="fa-solid fa-play" style="font-size: 12px; margin: 0;"></i>
+                
+                <i class="fa-regular fa-heart save-btn" style="font-size: 20px; margin-left: 10px; color: #ff4081; transition: 0.3s;"></i>
             `;
 
-            li.addEventListener('click', () => {
-                const selectedSong = {
-                    path: song.previewUrl,
-                    displayName: song.trackName,
-                    cover: coverImage,
-                    artist: song.artistName
-                };
+            // Dados organizados da música
+            const songData = {
+                path: song.previewUrl,
+                displayName: song.trackName,
+                cover: coverImage,
+                artist: song.artistName
+            };
 
-                songs.push(selectedSong);
+            // 1. Evento: Clicar na linha para TOCAR
+            li.addEventListener('click', () => {
+                songs.push(songData);
                 musicIndex = songs.length - 1;
                 loadMusic(songs[musicIndex]);
                 playMusic();
                 musicList.style.display = 'none';
+            });
+
+            // 2. Evento: Clicar no Coração para SALVAR
+            const heartBtn = li.querySelector('.save-btn');
+            heartBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Impede que a música toque ao clicar no coração
+                
+                // Muda o ícone para "cheio" (visual)
+                heartBtn.classList.remove('fa-regular');
+                heartBtn.classList.add('fa-solid');
+
+                // Chama a função para salvar no PHP
+                salvarNoBanco(songData);
             });
 
             musicList.appendChild(li);
@@ -183,10 +199,54 @@ async function searchMusic(term) {
 
     } catch (error) {
         console.error("Erro:", error);
-        loadingSpinner.style.display = 'none'; // Garante que o loading some se der erro
-        alert("Erro ao buscar. Verifique sua internet.");
+        loadingSpinner.style.display = 'none';
+        alert("Erro ao buscar.");
     }
 }
+
+// --- FUNÇÃO QUE FALA COM O PHP ---
+async function salvarNoBanco(songData) {
+    try {
+        const response = await fetch('save_music.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(songData)
+        });
+
+        const result = await response.json();
+        if(result.status === 'sucesso') {
+            console.log("Música salva no banco!");
+            // Opcional: Alertar o usuário
+            // alert("Música salva nos favoritos!");
+        } else {
+            alert("Erro ao salvar: " + result.mensagem);
+        }
+
+    } catch (error) {
+        console.error("Erro na requisição:", error);
+    }
+}
+
+// --- NOVA FUNÇÃO PARA FALAR COM O PHP ---
+async function saveToHistory(songData) {
+    try {
+        const response = await fetch('save_music.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(songData)
+        });
+
+        const result = await response.json();
+        console.log("PHP respondeu:", result); // Abre o F12 para ver esta mensagem
+
+    } catch (error) {
+        console.error("Erro ao salvar no histórico:", error);
+    }
+}
+
+// ... (O resto dos eventos click e keypress continua igual) ...
 
 // Evento para a tecla ENTER
 searchInput.addEventListener('keypress', (e) => {
@@ -199,4 +259,111 @@ searchInput.addEventListener('keypress', (e) => {
 // Faltava adicionar o evento de clique no botão da lupa
 searchButton.addEventListener('click', () => {
     searchMusic(searchInput.value);
+});
+
+
+
+// --- SISTEMA DE LISTAR FAVORITOS ---
+
+// --- SISTEMA DE LISTAR E REMOVER FAVORITOS ---
+
+const favButton = document.getElementById('fav-button');
+
+favButton.addEventListener('click', async () => {
+    // Limpa visual
+    searchInput.value = '';
+    loadingSpinner.style.display = 'block';
+    musicList.style.display = 'none';
+
+    try {
+        const response = await fetch('get_favorites.php');
+        const data = await response.json();
+        
+        loadingSpinner.style.display = 'none';
+
+        if (data.length === 0) {
+            alert("Você ainda não tem músicas favoritas!");
+            return;
+        }
+
+        musicList.innerHTML = '';
+        musicList.style.display = 'block';
+
+        data.forEach(song => {
+            const li = document.createElement('li');
+
+            // 1. ALTERAÇÃO NO HTML: Define a cor inicial como CINZA (#999)
+            li.innerHTML = `
+                <div style="display: flex; align-items: center; flex-grow: 1;">
+                    <img src="${song.capa}" style="width: 40px; height: 40px; border-radius: 5px; margin-right: 10px;">
+                    <span>
+                        <strong>${song.nome_musica}</strong> <br> 
+                        <small>${song.artista}</small>
+                    </span>
+                </div>
+                
+                <i class="fas fa-trash delete-btn" 
+                   style="font-size: 18px; color: #999; margin-left: 15px; cursor: pointer;"></i>
+            `;
+
+            // 1. Evento: Tocar música (clique na linha)
+            li.addEventListener('click', (e) => {
+                // Se clicou no lixo, não faz nada aqui (o evento do lixo cuida disso)
+                if(e.target.classList.contains('delete-btn')) return;
+
+                const selectedSong = {
+                    path: song.link_preview,
+                    displayName: song.nome_musica,
+                    cover: song.capa,
+                    artist: song.artista
+                };
+
+                songs.push(selectedSong);
+                musicIndex = songs.length - 1;
+                loadMusic(songs[musicIndex]);
+                playMusic();
+            });
+
+            // 2. Evento: REMOVER música (clique no lixo)
+            const deleteBtn = li.querySelector('.delete-btn');
+            
+            // Quando o mouse ENTRA: Fica Vermelho/Rosa
+            deleteBtn.addEventListener('mouseover', () => deleteBtn.style.color = '#ff0000ff');
+            
+            // Quando o mouse SAI: Volta a ser Cinza
+            deleteBtn.addEventListener('mouseout', () => deleteBtn.style.color = '#999');
+
+            // ... (código do clique para deletar continua igual) ...
+
+            deleteBtn.addEventListener('click', async (e) => {
+                e.stopPropagation(); // Impede a música de tocar
+                
+                // Confirmação simples (opcional)
+                if(!confirm("Quer remover esta música dos favoritos?")) return;
+
+                // Chama o PHP para deletar
+                const resp = await fetch('remover_musica.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ id: song.id }) // Manda o ID do banco
+                });
+
+                const result = await resp.json();
+
+                if(result.status === 'sucesso') {
+                    // Remove a linha da tela visualmente (efeito mágico)
+                    li.style.opacity = '0';
+                    setTimeout(() => li.remove(), 300); // Espera o efeito visual e apaga
+                } else {
+                    alert("Erro ao remover.");
+                }
+            });
+
+            musicList.appendChild(li);
+        });
+
+    } catch (error) {
+        console.error("Erro ao buscar favoritos:", error);
+        loadingSpinner.style.display = 'none';
+    }
 });

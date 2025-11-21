@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+// Verifica se o usuário NÃO está logado
+if (!isset($_SESSION['usuario_id'])) {
+    // Se não estiver, manda de volta para o login
+    header("Location: login.html");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -10,6 +20,11 @@
 </head>
 
 <body>
+    <div style="position: absolute; top: 20px; left: 20px; color: white; z-index: 100; font-family: sans-serif; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px;">
+        Olá, <strong><?php echo $_SESSION['usuario_nome']; ?></strong>! 
+        <a href="logout.php" style="color: #ff4081; margin-left: 10px; text-decoration: none;">Sair</a>
+    </div>
+
     <div class="background">
         <img src="assets/2.png" id="bg-img"> 
     </div>
@@ -39,18 +54,21 @@
 
         <div class="search-wrapper">
             <input type="text" id="search-input" placeholder="Buscar música ou artista...">
-            <button id="search-button">
+            
+            <button id="search-button" title="Pesquisar">
                 <i class="fa-solid fa-search"></i>
             </button>
+            
+            <button id="fav-button" title="Meus Favoritos">
+                <i class="fa-solid fa-heart"></i>
+            </button>
+
             <div class="loading" id="loading-spinner"></div>
         </div>
 
         <ul id="music-list" class="music-list">
             </ul>
-
-    </div>
-
-    <script src="main.js"></script>
+        </div> <script src="main.js"></script>
 
 </body>
 </html>
