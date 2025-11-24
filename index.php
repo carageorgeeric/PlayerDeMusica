@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-// Verifica se o usuário NÃO está logado
+
 if (!isset($_SESSION['usuario_id'])) {
-    // Se não estiver, manda de volta para o login
+
     header("Location: login.html");
     exit();
 }
