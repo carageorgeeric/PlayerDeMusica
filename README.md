@@ -1,8 +1,9 @@
 # 🎵 Player de Música (Projeto Acadêmico)
 
-Este é um projeto de um player de música simples, desenvolvido com HTML, CSS e JavaScript para fins acadêmicos.
+Este é um projeto de um player de música simples, desenvolvido com HTML, CSS, JavaScript e PHP para o projeto acadêmico 
+relacionado a aula de Desenvolvimento Web
 
-Este projeto foi criado como avaliação para a disciplina de **JavaScript, HTML e CSS**, ministrada pelo Professor **Helder**.
+Este projeto foi criado como avaliação para a disciplina de **Desenvolvimento Web**, ministrada pelo Professor **Helder**.
 
 ## 🧑‍💻 Autores
 
@@ -39,6 +40,7 @@ Para a construção deste projeto, foram utilizadas as seguintes tecnologias:
     * Manipular o DOM (alterar capas, nomes, fundos).
     * Controlar o elemento `<audio>` do HTML.
     * Gerir a lógica de "próxima", "anterior" e "autoplay".
+* **PHP:** Utilizado para a integração com banco de dados e sistema de login e autentificação
 
 ---
 
