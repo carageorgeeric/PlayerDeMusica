@@ -147,3 +147,6 @@ Clique em **"Sair"**, no canto superior esquerdo, para encerrar a sessão e volt
 > 💡 **Observação:** as músicas buscadas pelo iTunes tocam apenas um **preview de ~30 segundos**
 > (limitação da API gratuita). As 3 faixas iniciais tocam por completo, desde que os arquivos
 > `.mp3` estejam na pasta `assets/`.
+
+
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/22513b80-3665-469b-92f2-78a90ce5fd05" />
