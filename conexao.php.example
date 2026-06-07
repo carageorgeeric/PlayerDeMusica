@@ -1,0 +1,18 @@
+<?php
+
+// Copie este arquivo para "conexao.php" e preencha com as suas credenciais.
+// O arquivo "conexao.php" está no .gitignore para não versionar dados sensíveis.
+
+$host   = "localhost";
+$usuario = "root";          // usuário do MySQL (padrão XAMPP: root)
+$senha  = "";               // senha do MySQL (padrão XAMPP: vazio)
+$banco  = "player_musica";  // nome do banco criado a partir do database.sql
+
+
+$conn = new mysqli($host, $usuario, $senha, $banco);
+
+
+if ($conn->connect_error) {
+    die("Falha na conexão: " . $conn->connect_error);
+}
+?>

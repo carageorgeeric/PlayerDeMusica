@@ -10,8 +10,10 @@ if (!isset($_SESSION['usuario_id'])) {
 
 $usuario_id = $_SESSION['usuario_id'];
 
-$sql = "SELECT * FROM musicas_salvas WHERE usuario_id = $usuario_id ORDER BY id DESC";
-$result = $conn->query($sql);
+$stmt = $conn->prepare("SELECT * FROM musicas_salvas WHERE usuario_id = ? ORDER BY id DESC");
+$stmt->bind_param("i", $usuario_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
 $favoritas = [];
 

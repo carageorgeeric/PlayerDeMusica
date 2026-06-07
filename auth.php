@@ -15,16 +15,19 @@ if ($acao == 'cadastro') {
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
 
-    $sql_check = "SELECT * FROM usuarios WHERE email = '$email'";
-    $result = $conn->query($sql_check);
+    $stmt_check = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
+    $stmt_check->bind_param("s", $email);
+    $stmt_check->execute();
+    $result = $stmt_check->get_result();
 
     if ($result->num_rows > 0) {
         echo "<script>alert('Este email já está cadastrado!'); window.location.href='login.html';</script>";
     } else {
         
-        $sql = "INSERT INTO usuarios (nome, email, senha) VALUES ('$nome', '$email', '$senhaHash')";
-        
-        if ($conn->query($sql) === TRUE) {
+        $stmt = $conn->prepare("INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $nome, $email, $senhaHash);
+
+        if ($stmt->execute()) {
             echo "<script>alert('Cadastro realizado! Faça login agora.'); window.location.href='login.html';</script>";
         } else {
             echo "Erro: " . $conn->error;
@@ -38,8 +41,10 @@ elseif ($acao == 'login') {
     $senha = $_POST['senha'];
 
 
-    $sql = "SELECT * FROM usuarios WHERE email = '$email'";
-    $result = $conn->query($sql);
+    $stmt = $conn->prepare("SELECT * FROM usuarios WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         $usuario = $result->fetch_assoc();
