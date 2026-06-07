@@ -46,12 +46,7 @@ Para a construção deste projeto, foram utilizadas as seguintes tecnologias:
 
 ## ⚙️ Como Executar o Projeto
 
-Como este projeto utiliza apenas tecnologias *front-end* e utiliza arquivos de música locais, não é necessário um servidor.
-
 1.  Certifique-se de que tem todos os arquivos do projeto na mesma pasta (ou na estrutura de pastas correta), incluindo:
-    * `index.html`
-    * `styles.css` 
-    * `main.js` 
     * As 3 músicas 
     * As imagens de capa e de fundo.
 2.  Abra o arquivo `index.html` diretamente no seu navegador de preferência (como Google Chrome, Firefox, etc.).
